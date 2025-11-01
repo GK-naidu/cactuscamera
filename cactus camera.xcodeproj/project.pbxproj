@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		F0745D392EB605B0001B66C0 /* cactus camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "cactus camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0745D392EB605B0001B66C0 /* CactusCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CactusCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		F0745D3A2EB605B0001B66C0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F0745D392EB605B0001B66C0 /* cactus camera.app */,
+				F0745D392EB605B0001B66C0 /* CactusCamera.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F0745D382EB605B0001B66C0 /* cactus camera */ = {
+		F0745D382EB605B0001B66C0 /* CactusCamera */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F0745D442EB605B2001B66C0 /* Build configuration list for PBXNativeTarget "cactus camera" */;
+			buildConfigurationList = F0745D442EB605B2001B66C0 /* Build configuration list for PBXNativeTarget "CactusCamera" */;
 			buildPhases = (
 				F0745D352EB605B0001B66C0 /* Sources */,
 				F0745D362EB605B0001B66C0 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				F0745D3B2EB605B0001B66C0 /* cactus camera */,
 			);
-			name = "cactus camera";
+			name = CactusCamera;
 			packageProductDependencies = (
 			);
 			productName = "cactus camera";
-			productReference = F0745D392EB605B0001B66C0 /* cactus camera.app */;
+			productReference = F0745D392EB605B0001B66C0 /* CactusCamera.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F0745D382EB605B0001B66C0 /* cactus camera */,
+				F0745D382EB605B0001B66C0 /* CactusCamera */,
 			);
 		};
 /* End PBXProject section */
@@ -256,7 +256,7 @@
 				DEVELOPMENT_TEAM = 767TND7ZLG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "cactus cam";
+				INFOPLIST_KEY_CFBundleDisplayName = CactusCamera;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -290,7 +290,7 @@
 				DEVELOPMENT_TEAM = 767TND7ZLG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "cactus cam";
+				INFOPLIST_KEY_CFBundleDisplayName = CactusCamera;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -326,7 +326,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F0745D442EB605B2001B66C0 /* Build configuration list for PBXNativeTarget "cactus camera" */ = {
+		F0745D442EB605B2001B66C0 /* Build configuration list for PBXNativeTarget "CactusCamera" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0745D452EB605B2001B66C0 /* Debug */,

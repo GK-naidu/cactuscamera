@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct cactus_cameraApp: App {
+struct CactusCameraApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
