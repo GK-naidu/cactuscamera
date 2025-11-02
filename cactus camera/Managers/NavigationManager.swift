@@ -5,4 +5,8 @@
 //  Created by GK Naidu on 01/11/25.
 //
 
-import Foundation
+import SwiftUI
+
+final class NavigationManager: ObservableObject {
+    @Published var currentTab: AppTab = .camera
+}

@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct PermissionsStatus: Equatable {
+    var cameraAuthorized: Bool
+    var microphoneAuthorized: Bool
+    var photoLibraryAuthorized: Bool
+}

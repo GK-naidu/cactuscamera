@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		F0745D392EB605B0001B66C0 /* CactusCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CactusCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0745DDC2EB670F8001B66C0 /* CactusCamera-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CactusCamera-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +33,7 @@
 		F0745D302EB605B0001B66C0 = {
 			isa = PBXGroup;
 			children = (
+				F0745DDC2EB670F8001B66C0 /* CactusCamera-Info.plist */,
 				F0745D3B2EB605B0001B66C0 /* cactus camera */,
 				F0745D3A2EB605B0001B66C0 /* Products */,
 			);
@@ -256,8 +258,13 @@
 				DEVELOPMENT_TEAM = 767TND7ZLG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CactusCamera-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = CactusCamera;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSCameraUsageDescription = "CactusCamera needs camera access to record video and capture photos";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CactusCamera uses the microphone to sync the flash with music while recording";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "CactusCamera saves your videos and photos to your library";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "CactusCamera needs access to show your saved recordings";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -290,8 +297,13 @@
 				DEVELOPMENT_TEAM = 767TND7ZLG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CactusCamera-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = CactusCamera;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSCameraUsageDescription = "CactusCamera needs camera access to record video and capture photos";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CactusCamera uses the microphone to sync the flash with music while recording";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "CactusCamera saves your videos and photos to your library";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "CactusCamera needs access to show your saved recordings";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

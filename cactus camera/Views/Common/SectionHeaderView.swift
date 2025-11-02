@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct SectionHeaderView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    let title: String
+    let subtitle: String?
 
-#Preview {
-    SectionHeaderView()
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.white)
+
+            if let subtitle = subtitle {
+                Text(subtitle)
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundStyle(Color.gray)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }

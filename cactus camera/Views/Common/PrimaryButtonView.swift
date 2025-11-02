@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct PrimaryButtonView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    let title: String
+    let action: () -> Void
+    var fill: Color = Color.white
+    var foreground: Color = Color.black
 
-#Preview {
-    PrimaryButtonView()
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(foreground)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(fill)
+                )
+        }
+        .buttonStyle(.plain)
+    }
 }
