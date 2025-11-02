@@ -26,8 +26,8 @@ struct CactusCameraApp: App {
 
         let sessionMgr = CaptureSessionManager()
         let flashCtrl = FlashController()
-        let audioReactEng = AudioReactiveEngine()
-        _cameraViewModel = StateObject(wrappedValue: CameraViewModel(sessionManager: sessionMgr, flashController: flashCtrl, audioEngine: audioReactEng))
+        
+        _cameraViewModel = StateObject(wrappedValue: CameraViewModel(sessionManager: sessionMgr, flashController: flashCtrl))
 
         _settingsViewModel = StateObject(wrappedValue: SettingsViewModel())
     }

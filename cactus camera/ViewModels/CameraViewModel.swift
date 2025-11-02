@@ -19,17 +19,29 @@ final class CameraViewModel: ObservableObject {
 
     @Published var sessionManager: CaptureSessionManager
     @Published var flashController: FlashController
-    @Published var audioEngine: AudioReactiveEngine
 
     private var timerTask: Task<Void, Never>?
     private var strobeTask: Task<Void, Never>?
 
+    private var lastTorchUpdateTime: Date = .distantPast
+    private let torchUpdateInterval: TimeInterval = 0.1
+
+    private var fastEnv: Float = 0.0
+    private var slowEnv: Float = 0.0
+
+    private let fastDecay: Float = 0.5
+    private let slowAlpha: Float = 0.05
+
+    private let noiseFloor: Float = 0.05
+    private let minSlowFloor: Float = 0.06
+
+    private let minChangeForUpdate: Float = 0.12
+    private var lastSentLevel: Float = 0.0
+
     init(sessionManager: CaptureSessionManager,
-         flashController: FlashController,
-         audioEngine: AudioReactiveEngine) {
+         flashController: FlashController) {
         self.sessionManager = sessionManager
         self.flashController = flashController
-        self.audioEngine = audioEngine
         self.sessionManager.startSession()
         hookSessionCallbacks()
     }
@@ -39,7 +51,7 @@ final class CameraViewModel: ObservableObject {
             guard let self else { return }
             guard case .recording = self.recordingState else { return }
             self.startTimer()
-            self.startStrobeLoopIfNeeded()
+            self.startStrobeLoop()
         }
 
         sessionManager.onRecordingWillStop = { [weak self] in
@@ -67,10 +79,66 @@ final class CameraViewModel: ObservableObject {
                 Haptics.strong()
             }
             self.stopStrobeLoop()
-            Task {
-                try? self.flashController.setTorch(active: false)
+            self.flashController.setTorchLevel(0)
+        }
+    }
+
+    private func startStrobeLoop() {
+        strobeTask?.cancel()
+
+        strobeTask = Task { [weak self] in
+            guard let self else { return }
+
+            self.fastEnv = 0
+            self.slowEnv = 0
+            self.lastTorchUpdateTime = .distantPast
+            self.lastSentLevel = 0
+
+            while !Task.isCancelled {
+                if !self.isRecording || !self.isStrobeOn {
+                    try? await Task.sleep(nanoseconds: 20_000_000)
+                    continue
+                }
+
+                let rawLevel = self.sessionManager.currentAudioLevel()
+                let clamped = max(0, min(rawLevel, 1))
+
+                self.fastEnv = max(clamped, self.fastEnv * self.fastDecay)
+                self.slowEnv = (1 - self.slowAlpha) * self.slowEnv + self.slowAlpha * clamped
+
+                let denom = max(self.slowEnv, self.minSlowFloor)
+                let energyAboveBaseline = max(0, self.fastEnv - self.slowEnv)
+
+                var desiredLevel: Float = 0
+
+                if self.fastEnv >= self.noiseFloor {
+                    let normalized = min(max(energyAboveBaseline / denom, 0), 1)
+                    let mapped = 0.2 + (0.8 * normalized)
+                    desiredLevel = mapped
+                } else {
+                    desiredLevel = 0
+                }
+
+                let now = Date()
+                let enoughTimePassed = now.timeIntervalSince(self.lastTorchUpdateTime) >= self.torchUpdateInterval
+                let levelDelta = abs(desiredLevel - self.lastSentLevel)
+
+                if enoughTimePassed && levelDelta >= self.minChangeForUpdate {
+                    self.lastTorchUpdateTime = now
+                    self.lastSentLevel = desiredLevel
+                    self.flashController.setTorchLevel(desiredLevel)
+                }
+
+                try? await Task.sleep(nanoseconds: 20_000_000)
             }
         }
+    }
+
+    private func stopStrobeLoop() {
+        strobeTask?.cancel()
+        strobeTask = nil
+        lastSentLevel = 0
+        flashController.setTorchLevel(0)
     }
 
     func toggleRecording() {
@@ -89,9 +157,15 @@ final class CameraViewModel: ObservableObject {
         recordingState = .recording(startedAt: start)
         isRecording = true
         elapsedDisplayText = "00:00"
+
+        fastEnv = 0
+        slowEnv = 0
+        lastTorchUpdateTime = .distantPast
+        lastSentLevel = 0
+
         sessionManager.startRecording()
         startTimer()
-        startStrobeLoopIfNeeded()
+        startStrobeLoop()
         Haptics.strong()
     }
 
@@ -125,63 +199,13 @@ final class CameraViewModel: ObservableObject {
     func setStrobeEnabled(_ enabled: Bool) {
         isStrobeOn = enabled
         if !enabled {
-            stopStrobeLoop()
-            Task {
-                try? flashController.setTorch(active: false)
-            }
-        } else {
-            if isRecording {
-                startStrobeLoopIfNeeded()
-            }
+            flashController.setTorchLevel(0)
         }
     }
 
-    private func startStrobeLoopIfNeeded() {
-        if !isStrobeOn {
-            return
-        }
-        if strobeTask != nil {
-            return
-        }
-
-        try? audioEngine.start()
-
-        strobeTask = Task { [weak self] in
-            guard let self else { return }
-
-            var lastFlashTime = Date.distantPast
-            let minInterval: TimeInterval = 0.15
-            let threshold: Float = 0.6
-
-            while !Task.isCancelled {
-                if !self.isStrobeOn || !self.isRecording {
-                    try? await Task.sleep(nanoseconds: 50_000_000)
-                    continue
-                }
-
-                let level = self.audioEngine.peakLevel
-                let now = Date()
-
-                if level >= threshold && now.timeIntervalSince(lastFlashTime) >= minInterval {
-                    await self.pulseTorch()
-                    lastFlashTime = now
-                }
-
-                try? await Task.sleep(nanoseconds: 50_000_000)
-            }
-        }
-    }
-
-    private func stopStrobeLoop() {
-        strobeTask?.cancel()
-        strobeTask = nil
-        audioEngine.stop()
-    }
-
-    private func pulseTorch() async {
-        try? flashController.setTorch(active: true)
-        try? await Task.sleep(nanoseconds: 120_000_000)
-        try? flashController.setTorch(active: false)
+    func manualFlashPulse() {
+        guard isStrobeOn else { return }
+        flashController.quickPulse()
     }
 
     deinit {
@@ -189,7 +213,5 @@ final class CameraViewModel: ObservableObject {
         strobeTask?.cancel()
     }
 }
-
-
 
 

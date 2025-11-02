@@ -74,6 +74,23 @@ final class CaptureSessionManager: NSObject, ObservableObject {
         }
     }
 
+    func currentAudioLevel() -> Float {
+        guard let audioConnection = movieOutput.connection(with: .audio),
+              let channel = audioConnection.audioChannels.first else {
+            return 0
+        }
+
+        let dB = channel.peakHoldLevel
+        let linear = pow(10.0, dB / 20.0)
+
+        if linear.isNaN || linear.isInfinite {
+            return 0
+        }
+
+        let clamped = max(0, min(Float(linear), 1))
+        return clamped
+    }
+
     private func configureSession() {
         sessionQueue.async {
             self.session.beginConfiguration()
