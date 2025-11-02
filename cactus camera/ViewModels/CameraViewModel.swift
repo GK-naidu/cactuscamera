@@ -12,7 +12,7 @@ import AVFoundation
 @MainActor
 final class CameraViewModel: ObservableObject {
     @Published var isRecording: Bool = false
-    @Published var isStrobeOn: Bool = false
+    @Published var isStrobeOn: Bool = true
 
     @Published var recordingState: RecordingState = .idle
     @Published var elapsedDisplayText: String = "00:00"

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct RootView: View {
     @EnvironmentObject var navigationManager: NavigationManager
@@ -14,34 +15,34 @@ struct RootView: View {
     @EnvironmentObject var cameraViewModel: CameraViewModel
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Group {
-                if appLaunchViewModel.shouldShowPermissionsGate || !permissionsViewModel.allGranted {
-                    PermissionsGateView()
-                } else {
-                    switch navigationManager.currentTab {
-                    case .gallery:
-                        GalleryView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .camera:
-                        CameraView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    case .settings:
-                        SettingsView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black)
-                    }
+        Group {
+            if appLaunchViewModel.shouldShowPermissionsGate || !permissionsViewModel.allGranted {
+                PermissionsGateView()
+            } else {
+                switch navigationManager.currentTab {
+                case .gallery:
+                    GalleryView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black)
+                case .camera:
+                    CameraView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black)
+                case .settings:
+                    SettingsView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black)
                 }
-            }
-
-            if !(appLaunchViewModel.shouldShowPermissionsGate || !permissionsViewModel.allGranted) {
-                FloatingTabBarView(selection: $navigationManager.currentTab)
-                    .padding(.bottom, 32)
             }
         }
         .background(Color.black.ignoresSafeArea())
+        .ignoresSafeArea(.keyboard)
+        .safeAreaInset(edge: .bottom) {
+            if !(appLaunchViewModel.shouldShowPermissionsGate || !permissionsViewModel.allGranted) {
+                FloatingTabBarView(selection: $navigationManager.currentTab)
+                    .padding(.bottom, 16)
+            }
+        }
     }
 }
 

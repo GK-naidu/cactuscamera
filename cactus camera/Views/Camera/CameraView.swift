@@ -16,20 +16,28 @@ struct CameraView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            VStack(spacing: 24) {
+            VStack {
                 topBar
-                    .padding(.top, 12)
+                    .padding(.top, 20)
                     .padding(.horizontal, 20)
-                    .padding(.top, safeTopPadding())
 
-                previewSection
-                    .padding(.horizontal, 20)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white.opacity(0.05))
+                        .overlay(
+                            CameraPreviewView(session: cameraViewModel.sessionManager.session)
+                                .clipShape(RoundedRectangle(cornerRadius: 24))
+                        )
+                }
+                .padding(.horizontal, 20)
+                .aspectRatio(3/4, contentMode: .fit)
 
                 bottomControls
                     .padding(.horizontal, 40)
+                    .padding(.top, 20)
 
                 Spacer()
-                    .frame(height: 120)
+                    .frame(height: 100)
             }
         }
         .onAppear {
@@ -44,182 +52,87 @@ struct CameraView: View {
         HStack {
             Text("CACTUS")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .kerning(0.5)
-                .foregroundStyle(Color.white)
+                .foregroundColor(.white)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color.white.opacity(0.07))
-                )
+                .background(Color.white.opacity(0.1))
+                .cornerRadius(10)
 
             Spacer()
 
             HStack(spacing: 12) {
-                Button {
-                } label: {
+                Button {} label: {
                     Image(systemName: "mic.fill")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundColor(.white)
                         .frame(width: 32, height: 32)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.white.opacity(0.07))
-                        )
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(10)
                 }
 
-                Button {
-                } label: {
+                Button {} label: {
                     Text("1x")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundColor(.white)
                         .frame(width: 44, height: 32)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.white.opacity(0.07))
-                        )
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(10)
                 }
 
-                Button {
-                } label: {
+                Button {} label: {
                     Image(systemName: "arrow.triangle.2.circlepath.camera")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundColor(.white)
                         .frame(width: 32, height: 32)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.white.opacity(0.07))
-                        )
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(10)
                 }
             }
         }
-    }
-
-    private var previewSection: some View {
-        ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
-                .background(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(Color.white.opacity(0.03))
-                )
-                .overlay(
-                    CameraPreviewView(session: cameraViewModel.sessionManager.session)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                )
-                .frame(maxWidth: .infinity)
-                .frame(height: previewHeight())
-
-            if case .saving = cameraViewModel.recordingState {
-                savingBadge
-                    .padding(.leading, 16)
-                    .padding(.bottom, 16)
-            } else if cameraViewModel.isRecording {
-                recordingBadge
-                    .padding(.leading, 16)
-                    .padding(.bottom, 16)
-            }
-        }
-    }
-
-    private var recordingBadge: some View {
-        HStack(spacing: 6) {
-            Circle()
-                .fill(Color.red)
-                .frame(width: 8, height: 8)
-
-            Text(cameraViewModel.elapsedDisplayText)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Color.white)
-
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.white.opacity(0.07))
-        )
-    }
-
-    private var savingBadge: some View {
-        HStack(spacing: 8) {
-            ProgressView()
-                .progressViewStyle(.circular)
-                .tint(Color.white)
-                .frame(width: 14, height: 14)
-
-            Text("Saving…")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Color.white)
-
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.white.opacity(0.07))
-        )
     }
 
     private var bottomControls: some View {
         HStack {
-            StrobeModeToggleView(
-                isOn: $cameraViewModel.isStrobeOn,
-                onToggle: { newValue in
-                    cameraViewModel.setStrobeEnabled(newValue)
-                }
-            )
+            Button {
+                cameraViewModel.setStrobeEnabled(!cameraViewModel.isStrobeOn)
+            } label: {
+                Image(systemName: cameraViewModel.isStrobeOn ? "bolt.fill" : "bolt.slash.fill")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 56, height: 56)
+                    .background(Color.white.opacity(0.15))
+                    .cornerRadius(10)
+            }
 
             Spacer()
 
-            RecordButtonView(
-                isRecording: Binding(
-                    get: { cameraViewModel.isRecording },
-                    set: { _ in }
-                ),
-                action: {
-                    if case .saving = cameraViewModel.recordingState {
-                        return
-                    }
-                    Haptics.strong()
-                    cameraViewModel.toggleRecording()
-                }
-            )
+            Button {
+                if case .saving = cameraViewModel.recordingState { return }
+                Haptics.strong()
+                cameraViewModel.toggleRecording()
+            } label: {
+                Circle()
+                    .strokeBorder(Color.white, lineWidth: 4)
+                    .frame(width: 80, height: 80)
+                    .overlay(
+                        Circle()
+                            .fill(cameraViewModel.isRecording ? Color.red : Color.white)
+                            .frame(width: 60, height: 60)
+                    )
+            }
 
             Spacer()
 
             Button {
                 navigationManager.currentTab = .gallery
             } label: {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color.white.opacity(0.15))
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
                     .frame(width: 56, height: 56)
-                    .overlay(
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color.white)
-                    )
+                    .background(Color.white.opacity(0.15))
+                    .cornerRadius(10)
             }
         }
     }
-
-    private func previewHeight() -> CGFloat {
-        let screenH = UIScreen.main.bounds.height
-        let reservedTop = safeTopPadding() + 80
-        let reservedBottom: CGFloat = 240
-        let usable = screenH - reservedTop - reservedBottom
-        return max(usable, 300)
-    }
-
-    private func safeTopPadding() -> CGFloat {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first else {
-            return 44
-        }
-        return window.safeAreaInsets.top + 8
-    }
 }
-
-
